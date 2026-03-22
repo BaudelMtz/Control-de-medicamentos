@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">Control de Medicamentos</string>
+    <string name="login_title">Iniciar sesion en asilox</string>
+    <string name="label_user">Usuario:</string>
+    <string name="label_password">Contraseña:</string>
+    <string name="hint_user">Ingresar usuario</string>
+    <string name="hint_password">Ingresar contraseña</string>
+    <string name="show_password">Mostrar contraseña</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="btn_login">Iniciar sesion</string>
+    <string name="or_separator">OR</string>
+    <string name="btn_google">Iniciar sesión con Google</string>
+    <string name="btn_create_account">Crear cuenta</string>
+
+    <!-- Register Screen -->
+    <string name="register_title">Crear cuenta</string>
+    <string name="label_email">Correo:</string>
+    <string name="label_name">Nombre:</string>
+    <string name="label_lastname">Apellido:</string>
+    <string name="label_phone">Telefono:</string>
+    <string name="label_birthday">Fecha de nacimiento:</string>
+    <string name="label_create_password">Crear contraseña:</string>
+    <string name="accept_terms">Acepto los términos de servicio</string>
+    <string name="accept_privacy">Acepto las políticas de privacidad</string>
+    <string name="btn_back_to_login">Volver al inicio de sesion</string>
+
+    <!-- Start Screen -->
+    <string name="start_title">Pagina del asilo</string>
+    <string name="start_description">Pagina para dar seguimiento a la aplicación de los medicamentos</string>
+    <string name="btn_go_to_login">Login</string>
 </resources>
