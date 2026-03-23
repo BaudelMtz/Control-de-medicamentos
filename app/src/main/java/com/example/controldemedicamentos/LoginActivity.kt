@@ -16,7 +16,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -42,6 +42,17 @@ class LoginActivity : AppCompatActivity() {
         btnCreateAccount.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
+        }
+
+        // --- INICIO DEL NUEVO CÓDIGO ---
+        val btnLogin: Button = findViewById(R.id.btnLogin)
+        btnLogin.setOnClickListener {
+            // Creamos el intent para ir al Panel Principal
+            val intent = Intent(this, PanelPrincipalActivity::class.java)
+            startActivity(intent)
+
+            // Cerramos el Login para que el usuario no pueda regresar aquí presionando "Atrás"
+            finish()
         }
     }
 }
