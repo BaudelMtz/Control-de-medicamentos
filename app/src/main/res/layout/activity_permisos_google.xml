@@ -30,9 +30,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Acceder a Asilo"
-        android:textSize="24sp"
+        android:fontFamily="serif"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="#000000"
+        android:textColor="#111111"
         android:gravity="center"
         android:layout_marginBottom="16dp"/>
 
@@ -111,20 +112,25 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
             android:text="Cancelar"
-            android:background="@android:drawable/btn_default"
+            android:background="@drawable/bg_boton_verde_oscuro"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:paddingHorizontal="24dp"
             android:textAllCaps="false"
             android:layout_marginEnd="16dp"/>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
             android:text="Continuar"
-            android:backgroundTint="#1A73E8"
+            android:background="@drawable/bg_boton_verde_oscuro"
             android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:paddingHorizontal="32dp"
             android:textAllCaps="false"/>
     </LinearLayout>
 

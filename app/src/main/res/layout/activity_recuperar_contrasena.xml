@@ -11,8 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cambiar contraseña"
-        android:textSize="24sp"
-        android:textColor="#000000"
+        android:fontFamily="serif"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#111111"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="16dp"/>
 
@@ -20,8 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Ingrese la dirección de correo electrónico verificada de su cuenta de usuario y se le enviara un enlace para restablecer la contraseña."
-        android:textSize="16sp"
-        android:textColor="#333333"
+        android:textSize="14sp"
+        android:textColor="#666666"
         android:gravity="center"
         android:layout_marginBottom="32dp"/>
 
@@ -33,14 +35,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Correo electrónico:"
-            android:textColor="#000000"
-            android:textSize="16sp"/>
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp"/>
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="50dp"
             android:background="@android:drawable/edit_text"
-            android:inputType="textEmailAddress"
-            android:layout_marginTop="8dp"/>
+            android:inputType="textEmailAddress"/>
     </LinearLayout>
 
     <ImageView
@@ -51,13 +54,13 @@
         android:src="@drawable/img_recaptcha"
         android:contentDescription="Imagen simulando el reCAPTCHA" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:text="Enviar correo para\nrestablecer contraseña"
-        android:background="@android:drawable/btn_default"
-        android:textColor="#000000"
-        android:textAllCaps="false"
-        android:padding="12dp"/>
+        android:background="@drawable/bg_boton_verde_oscuro"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textAllCaps="false"/>
 
 </LinearLayout>
