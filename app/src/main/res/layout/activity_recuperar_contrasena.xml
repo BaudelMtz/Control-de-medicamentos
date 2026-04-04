@@ -51,8 +51,8 @@
         android:layout_height="250dp"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="32dp"
-        android:src="@drawable/img_recaptcha"
-        android:contentDescription="Imagen simulando el reCAPTCHA" />
+        android:contentDescription="Imagen simulando el reCAPTCHA"
+        android:src="@drawable/img_recaptcha" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"

@@ -1,33 +1,65 @@
 <resources>
     <string name="app_name">Control de Medicamentos</string>
-    <string name="login_title">Iniciar sesion en asilox</string>
-    <string name="label_user">Usuario:</string>
-    <string name="label_password">Contraseña:</string>
+
+    <!-- Login Screen -->
+    <string name="login_title">Iniciar Sesión</string>
+    <string name="label_user">Usuario</string>
+    <string name="label_password">Contraseña</string>
     <string name="hint_user">Ingresar usuario</string>
     <string name="hint_password">Ingresar contraseña</string>
     <string name="show_password">Mostrar contraseña</string>
-    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
-    <string name="btn_login">Iniciar sesion</string>
-    <string name="or_separator">OR</string>
+    <string name="keep_session">Mantener sesión activa</string>
+    <string name="forgot_password">¿Has olvidado tu contraseña?</string>
+    <string name="btn_login">Iniciar sesión</string>
+    <string name="or_separator">O</string>
     <string name="btn_google">Iniciar sesión con Google</string>
     <string name="btn_create_account">Crear cuenta</string>
 
     <!-- Register Screen -->
-    <string name="register_title">Crear cuenta</string>
-    <string name="label_email">Correo:</string>
-    <string name="label_name">Nombre:</string>
-    <string name="label_lastname">Apellido:</string>
-    <string name="label_phone">Telefono:</string>
-    <string name="label_birthday">Fecha de nacimiento:</string>
-    <string name="label_create_password">Crear contraseña:</string>
+    <string name="register_title">Crear Cuenta</string>
+    <string name="register_subtitle">Regístrate para acceder al sistema</string>
+    <string name="label_email">Correo</string>
+    <string name="hint_email">✉️ correo@ejemplo.com</string>
+    <string name="label_name">Nombre</string>
+    <string name="hint_name">👤 Juan</string>
+    <string name="label_lastname">Apellido</string>
+    <string name="hint_lastname">Pérez</string>
+    <string name="label_user_register">Usuario</string>
+    <string name="hint_user_register">👤 juanperez</string>
+    <string name="label_phone">Teléfono</string>
+    <string name="hint_phone">📱 662 123 4567</string>
+    <string name="label_birthday">Fecha de nacimiento</string>
+    <string name="hint_birthday">📅 dd/mm/aaaa</string>
+    <string name="label_create_password">Crear contraseña</string>
+    <string name="hint_create_password">🔒 Mínimo 8 caracteres</string>
     <string name="accept_terms">Acepto los términos de servicio</string>
     <string name="accept_privacy">Acepto las políticas de privacidad</string>
-    <string name="btn_back_to_login">Volver al inicio de sesion</string>
+    <string name="btn_back_to_login">← Volver al inicio de sesión</string>
+    <string name="btn_register_submit">CREAR CUENTA</string>
 
-    <!-- Start Screen -->
-    <string name="start_title">Pagina del asilo</string>
-    <string name="start_description">Pagina para dar seguimiento a la aplicación de los medicamentos</string>
-    <string name="btn_go_to_login">Login</string>
+    <!-- Account Selection Screen (Google) -->
+    <string name="google_access">Acceder con Google</string>
+    <string name="choose_account">Elige una cuenta</string>
+    <string name="account_jose">jose123@gmail.com</string>
+    <string name="account_luis">luis123@gmail.com</string>
+    <string name="account_david">David123@gmail.com</string>
+
+    <!-- Branding Tags -->
+    <string name="tag_doses">💊 Dosis exactas</string>
+    <string name="tag_hours">⏰ Horarios precisos</string>
+    <string name="tag_families">👨‍👩‍👧‍👦 Familias tranquilas</string>
+
+    <!-- Start Screen Redesign -->
+    <string name="start_title_part1">Impulso</string>
+    <string name="start_title_part2">de Vida</string>
+    <string name="start_subtitle">Sistema integral de gestión de medicamentos para asilos de ancianos</string>
+    <string name="feature_doses">💊  Control de dosis y horarios</string>
+    <string name="feature_residents">👥  Registro de residentes</string>
+    <string name="feature_history">📋  Historial de medicamentos</string>
+    <string name="feature_alerts">🔔  Alertas para familiares</string>
+    <string name="btn_start_login">Iniciar sesión  →</string>
+    <string name="footer_text">Universidad Estatal de Sonora · Ingeniería en Software</string>
+
     <string name="navigation_drawer_open">Abrir menú de navegación</string>
     <string name="navigation_drawer_close">Cerrar menú de navegación</string>
 </resources>

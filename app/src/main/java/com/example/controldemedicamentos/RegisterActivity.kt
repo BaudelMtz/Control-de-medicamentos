@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Patterns
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +24,6 @@ class RegisterActivity : AppCompatActivity() {
             insets
         }
 
-        // Referencias a los campos (corregidas para coincidir con el XML)
         val etEmail: TextInputEditText = findViewById(R.id.etEmail)
         val etName: TextInputEditText = findViewById(R.id.etName)
         val etLastName: TextInputEditText = findViewById(R.id.etLastName)
@@ -39,7 +39,7 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
-        val btnBackToLogin: Button = findViewById(R.id.btnRegisterBackToLogin)
+        val btnBackToLogin: TextView = findViewById(R.id.btnRegisterBackToLogin)
         btnBackToLogin.setOnClickListener {
             finish()
         }
