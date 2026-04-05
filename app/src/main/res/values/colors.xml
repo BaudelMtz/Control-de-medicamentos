@@ -7,4 +7,9 @@
     <color name="text_grey">#64748B</color>
     <color name="tag_background">#F0FDF4</color>
     <color name="tag_border">#D1FAE5</color>
+    <color name="bg_screen">#F8F9F6</color>
+    <color name="red_alert_bg">#FEE2E2</color>
+    <color name="red_alert_text">#DC2626</color>
+    <color name="blue_prog_bg">#E0F2FE</color>
+    <color name="blue_prog_text">#0284C7</color>
 </resources>

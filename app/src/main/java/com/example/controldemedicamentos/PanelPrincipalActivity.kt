@@ -1,5 +1,6 @@
 package com.example.controldemedicamentos
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
@@ -50,20 +51,29 @@ class PanelPrincipalActivity : AppCompatActivity() {
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+        toggle.drawerArrowDrawable.color = resources.getColor(R.color.white, theme)
+
 
         navigationView.setNavigationItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.nav_inicio -> {
-                    // Acción para Inicio
+
+                    drawerLayout.closeDrawer(GravityCompat.START)
                 }
                 R.id.nav_registrar -> {
-                    // Acción para Registrar
+
+                    val intent = Intent(this, RegisterActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.nav_medicamentos -> {
+                }
+                R.id.nav_horarios -> {
+                }
+                R.id.nav_reportes -> {
                 }
                 R.id.nav_perfiles -> {
-                    // Acción para Perfiles
                 }
                 R.id.nav_ajustes -> {
-                    // Acción para Ajustes
                 }
             }
             drawerLayout.closeDrawer(GravityCompat.START)
