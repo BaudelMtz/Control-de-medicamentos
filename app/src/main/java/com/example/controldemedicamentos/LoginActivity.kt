@@ -14,7 +14,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.iniciar_sesion)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.nsvLoginRoot)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -22,10 +22,10 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
-        // Referencias a los componentes (IDs sincronizados con activity_main.xml)
+        // Referencias a los componentes (IDs sincronizados con pantalla_principal.xml)
         val etEmail: TextInputEditText = findViewById(R.id.etEmail)
         val etPassword: TextInputEditText = findViewById(R.id.etPassword)
-        val cbKeepSession: CheckBox = findViewById(R.id.cbShowPassword) // Mantenemos el ID actual por ahora
+        val cbKeepSession: CheckBox = findViewById(R.id.cbShowPassword)
         val btnLogin: Button = findViewById(R.id.btnLogin)
         val btnGoogle: Button = findViewById(R.id.btnGoogle)
         val btnCreateAccount: Button = findViewById(R.id.btnCreateAccount)
