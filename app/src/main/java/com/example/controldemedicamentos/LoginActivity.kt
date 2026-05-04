@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -22,13 +24,22 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
-        // Referencias a los componentes (IDs sincronizados con pantalla_principal.xml)
+        // Referencias a los componentes
         val etEmail: TextInputEditText = findViewById(R.id.etEmail)
         val etPassword: TextInputEditText = findViewById(R.id.etPassword)
         val cbKeepSession: CheckBox = findViewById(R.id.cbShowPassword)
         val btnLogin: Button = findViewById(R.id.btnLogin)
         val btnGoogle: Button = findViewById(R.id.btnGoogle)
         val btnCreateAccount: Button = findViewById(R.id.btnCreateAccount)
+
+        // --- INICIO DE LO NUEVO: Botón de Olvidé mi contraseña ---
+        // Asegúrate de que el ID tvForgotPassword coincida con tu XML (iniciar_sesion.xml)
+        val tvForgotPassword = findViewById<TextView>(R.id.tvForgotPassword)
+        tvForgotPassword.setOnClickListener {
+            // Cuando creen la pantalla de recuperar contraseña, cambian este Toast por un Intent
+            Toast.makeText(this, "Redirigiendo a recuperación de contraseña...", Toast.LENGTH_SHORT).show()
+        }
+        // --- FIN DE LO NUEVO ---
 
         // Navegación a Registro (Crear cuenta nueva)
         btnCreateAccount.setOnClickListener {

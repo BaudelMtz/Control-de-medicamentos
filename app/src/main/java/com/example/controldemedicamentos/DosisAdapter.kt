@@ -31,7 +31,6 @@ class DosisAdapter(private val listaDosis: List<Dosis>) :
         return listaDosis.size
     }
 
-    // 4. Aquí inyectamos los datos reales en cada tarjetita
     override fun onBindViewHolder(holder: DosisViewHolder, position: Int) {
         val dosisActual = listaDosis[position]
 
@@ -39,9 +38,22 @@ class DosisAdapter(private val listaDosis: List<Dosis>) :
         holder.tvPaciente.text = dosisActual.nombrePaciente
         holder.tvMedicamento.text = dosisActual.medicamentoInfo
 
-        // Aquí programaremos la acción del botón verde más adelante
+        // --- INICIO DE LA LÓGICA DEL BOTÓN ---
         holder.btnAdministrado.setOnClickListener {
-            // Código para marcar como administrado
+            // 1.Mostramos un mensaje flotante
+            android.widget.Toast.makeText(
+                holder.itemView.context,
+                "Dosis de ${dosisActual.nombrePaciente} registrada",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+
+            // 2. Cambiamos la apariencia del botón para simular que ya se administró
+            holder.btnAdministrado.text = "Administrado"
+            holder.btnAdministrado.setBackgroundColor(android.graphics.Color.parseColor("#95A5A6")) // Gris
+            holder.btnAdministrado.isEnabled = false // Lo deshabilitamos para que no le den doble clic
+
+            // NOTA PARA DESPUES: Aquí es donde pondremos el código de Retrofit
+            // para avisarle a SQL Server que esta medicina ya se dio.
         }
     }
 }

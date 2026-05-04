@@ -57,23 +57,25 @@ class PanelPrincipalActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.nav_inicio -> {
-
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    // Ya estamos aquí, solo cerramos el menú
                 }
                 R.id.nav_registrar -> {
-
-                    val intent = Intent(this, RegisterActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, RegisterActivity::class.java))
                 }
                 R.id.nav_medicamentos -> {
+                    startActivity(Intent(this, MedicamentosActivity::class.java))
                 }
                 R.id.nav_horarios -> {
+                    startActivity(Intent(this, HorariosActivity::class.java))
                 }
                 R.id.nav_reportes -> {
+                    startActivity(Intent(this, ReportesActivity::class.java))
                 }
                 R.id.nav_perfiles -> {
+                    startActivity(Intent(this, PerfilesActivity::class.java))
                 }
                 R.id.nav_ajustes -> {
+                    startActivity(Intent(this, AjustesActivity::class.java))
                 }
             }
             drawerLayout.closeDrawer(GravityCompat.START)
