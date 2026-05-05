@@ -56,7 +56,9 @@
                 android:textSize="14sp"
                 android:layout_marginBottom="8dp"/>
 
+            <!-- EditText Corregido con ID -->
             <EditText
+                android:id="@+id/et_correo"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/bg_input_redondeado"
@@ -87,6 +89,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Fila 1 de imágenes -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
@@ -97,6 +100,7 @@
                         <ImageView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@drawable/bg_captcha_image" android:padding="16dp" android:src="@drawable/arbol_1" android:layout_marginStart="4dp"/>
                     </LinearLayout>
 
+                    <!-- Fila 2 de imágenes -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
@@ -107,6 +111,7 @@
                         <ImageView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@drawable/bg_captcha_image" android:padding="16dp" android:src="@drawable/puente" android:layout_marginStart="4dp"/>
                     </LinearLayout>
 
+                    <!-- Fila 3 de imágenes -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
@@ -118,7 +123,9 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <!-- Botón VERIFY Corregido con ID -->
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_verify_captcha"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:background="@drawable/bg_boton_verify"
@@ -131,6 +138,7 @@
         </LinearLayout>
     </ScrollView>
 
+    <!-- Botón Enviar con ID -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_enviar"
         android:layout_width="match_parent"
