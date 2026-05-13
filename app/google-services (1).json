@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "528661143969",
+    "project_id": "control-de-medicamentos-4603e",
+    "storage_bucket": "control-de-medicamentos-4603e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528661143969:android:4deb9798f386caf5ff2be0",
+        "android_client_info": {
+          "package_name": "com.example.controldemedicamentos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI4KW9PIhsjd8ZutccCdRnad0l8VTB2gM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
