@@ -115,7 +115,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             } else {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@LoginActivity, "Error de conexión con servidor Baudelio_M_V", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@LoginActivity, "Error de conexión con servidor SQL", Toast.LENGTH_LONG).show()
                 }
             }
         }
