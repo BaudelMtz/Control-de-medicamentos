@@ -53,6 +53,8 @@
         <activity
             android:name=".RecuperarContrasenaActivity"
             android:exported="false" />
+        <activity android:name=".AgregarMedicamentoActivity" />
+        <activity android:name=".RegistroPacienteActivity" />
     </application>
 
 </manifest>

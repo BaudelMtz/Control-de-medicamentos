@@ -72,7 +72,7 @@ class PanelPrincipalActivity : AppCompatActivity() {
                     startActivity(Intent(this, ReportesActivity::class.java))
                 }
                 R.id.nav_perfiles -> {
-                    startActivity(Intent(this, PerfilesActivity::class.java))
+                    startActivity(Intent(this, RegistroPacienteActivity::class.java))
                 }
                 R.id.nav_ajustes -> {
                     startActivity(Intent(this, AjustesActivity::class.java))
