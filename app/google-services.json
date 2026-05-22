@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "528661143969",
+    "project_id": "control-de-medicamentos-4603e",
+    "storage_bucket": "control-de-medicamentos-4603e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528661143969:android:4deb9798f386caf5ff2be0",
+        "android_client_info": {
+          "package_name": "com.example.controldemedicamentos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "528661143969-6kd0fiaohrhm8le8ugc5mrs8qaed8tmo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.controldemedicamentos",
+            "certificate_hash": "430e73f60a95fefaa59572673b97beb814de7358"
+          }
+        },
+        {
+          "client_id": "528661143969-bbc2ao0jda2lo9p8jcpftdr0ee04u2ha.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.controldemedicamentos",
+            "certificate_hash": "f9f06e75736251457ad1017bf41de264e638781b"
+          }
+        },
+        {
+          "client_id": "528661143969-vglbmijl4t0aitgdje02ks5o7phql7en.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.controldemedicamentos",
+            "certificate_hash": "23207136bec98ea2ee4ea375639feeb7c3ccedb7"
+          }
+        },
+        {
+          "client_id": "528661143969-uaocrnlbrmls8h6objnu190nmh4ihchr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI4KW9PIhsjd8ZutccCdRnad0l8VTB2gM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "528661143969-uaocrnlbrmls8h6objnu190nmh4ihchr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
