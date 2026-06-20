@@ -68,7 +68,8 @@ class LoginActivity : AppCompatActivity() {
         val tvForgotPassword: TextView = findViewById(R.id.tvForgotPassword)
 
         tvForgotPassword.setOnClickListener {
-            Toast.makeText(this, "Redirigiendo a recuperación de contraseña...", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, RecuperarContrasenaActivity::class.java)
+            startActivity(intent)
         }
 
         btnCreateAccount.setOnClickListener {

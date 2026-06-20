@@ -95,9 +95,36 @@
                         android:layout_height="80dp"
                         android:orientation="horizontal"
                         android:layout_marginBottom="8dp">
-                        <ImageView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@drawable/bg_captcha_image" android:padding="16dp" android:src="@drawable/puente" android:layout_marginEnd="4dp"/>
-                        <ImageView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@drawable/bg_captcha_image" android:padding="16dp" android:src="@drawable/casa_1" android:layout_marginHorizontal="4dp"/>
-                        <ImageView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@drawable/bg_captcha_image" android:padding="16dp" android:src="@drawable/arbol_1" android:layout_marginStart="4dp"/>
+
+                        <ImageView
+                            android:id="@+id/img_captcha_1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_captcha_image"
+                            android:padding="16dp"
+                            android:src="@drawable/puente" />
+
+                        <ImageView
+                            android:id="@+id/img_captcha_2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginHorizontal="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_captcha_image"
+                            android:padding="16dp"
+                            android:src="@drawable/casa_1" />
+
+                        <ImageView
+                            android:id="@+id/img_captcha_3"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_captcha_image"
+                            android:padding="16dp"
+                            android:src="@drawable/arbol_1" />
                     </LinearLayout>
 
                     <!-- Fila 2 de imágenes -->
@@ -106,9 +133,36 @@
                         android:layout_height="80dp"
                         android:orientation="horizontal"
                         android:layout_marginBottom="8dp">
-                        <ImageView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@drawable/bg_captcha_image" android:padding="16dp" android:src="@drawable/puente" android:layout_marginEnd="4dp"/>
-                        <ImageView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@drawable/bg_captcha_image" android:padding="16dp" android:src="@drawable/casa_2" android:layout_marginHorizontal="4dp"/>
-                        <ImageView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@drawable/bg_captcha_image" android:padding="16dp" android:src="@drawable/puente" android:layout_marginStart="4dp"/>
+
+                        <ImageView
+                            android:id="@+id/img_captcha_4"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_captcha_image"
+                            android:padding="16dp"
+                            android:src="@drawable/puente" />
+
+                        <ImageView
+                            android:id="@+id/img_captcha_5"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginHorizontal="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_captcha_image"
+                            android:padding="16dp"
+                            android:src="@drawable/casa_2" />
+
+                        <ImageView
+                            android:id="@+id/img_captcha_6"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_captcha_image"
+                            android:padding="16dp"
+                            android:src="@drawable/puente" />
                     </LinearLayout>
 
                     <!-- Fila 3 de imágenes -->
@@ -117,9 +171,36 @@
                         android:layout_height="80dp"
                         android:orientation="horizontal"
                         android:layout_marginBottom="16dp">
-                        <ImageView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@drawable/bg_captcha_image" android:padding="16dp" android:src="@drawable/casa_3" android:layout_marginEnd="4dp"/>
-                        <ImageView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@drawable/bg_captcha_image" android:padding="16dp" android:src="@drawable/arbol_2" android:layout_marginHorizontal="4dp"/>
-                        <ImageView android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:background="@drawable/bg_captcha_image" android:padding="16dp" android:src="@drawable/puente" android:layout_marginStart="4dp"/>
+
+                        <ImageView
+                            android:id="@+id/img_captcha_7"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_captcha_image"
+                            android:padding="16dp"
+                            android:src="@drawable/casa_3" />
+
+                        <ImageView
+                            android:id="@+id/img_captcha_8"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginHorizontal="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_captcha_image"
+                            android:padding="16dp"
+                            android:src="@drawable/arbol_2" />
+
+                        <ImageView
+                            android:id="@+id/img_captcha_9"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_captcha_image"
+                            android:padding="16dp"
+                            android:src="@drawable/puente" />
                     </LinearLayout>
                 </LinearLayout>
 
