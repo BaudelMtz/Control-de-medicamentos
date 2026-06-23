@@ -1,5 +1,7 @@
 package com.example.controldemedicamentos
 
+import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.LinearLayout
@@ -14,19 +16,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import conectarBaseDeDatos
 
-// Creamos un molde para guardar los datos de SQL temporalmente
-data class DosisHorario(val paciente: String, val medicamento: String, val hora: String)
+data class DosisHorario(val id: Int, val paciente: String, val medicamento: String, val hora: String)
 
 class HorariosActivity : AppCompatActivity() {
 
-    // Contenedor donde se inyectarán las tarjetas (Asegúrate de tener un LinearLayout vacío con este ID en tu XML)
     private lateinit var contenedorHorarios: LinearLayout
+    // ✨ 1. Guardamos cuál es la pestaña actual para saber qué recargar al volver
+    private var turnoActual = "Mañana"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_horarios)
 
-        // Configuración de la barra superior (Toolbar)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -36,23 +37,59 @@ class HorariosActivity : AppCompatActivity() {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        // Buscar el contenedor de las tarjetas
-        // NOTA: Debes asegurarte de que en tu activity_horarios.xml tienes un LinearLayout con el id: llContenedorHorarios
         contenedorHorarios = findViewById(R.id.llContenedorHorarios)
 
-        // Buscar los 3 botones de arriba
-        // NOTA: Ajusta estos IDs si les pusiste otros nombres en tu XML
         val btnManana = findViewById<MaterialButton>(R.id.btnManana)
         val btnTarde = findViewById<MaterialButton>(R.id.btnTarde)
         val btnNoche = findViewById<MaterialButton>(R.id.btnNoche)
 
-        // Al hacer clic, le pasamos la palabra clave a SQL
-        btnManana.setOnClickListener { cargarDosisPorTurno("Mañana") }
-        btnTarde.setOnClickListener { cargarDosisPorTurno("Tarde") }
-        btnNoche.setOnClickListener { cargarDosisPorTurno("Noche") }
+        btnManana.setOnClickListener {
+            turnoActual = "Mañana" // Actualizamos la memoria
+            activarBotonPestana(btnManana, btnTarde, btnNoche)
+            cargarDosisPorTurno(turnoActual)
+        }
+        btnTarde.setOnClickListener {
+            turnoActual = "Tarde"
+            activarBotonPestana(btnTarde, btnManana, btnNoche)
+            cargarDosisPorTurno(turnoActual)
+        }
+        btnNoche.setOnClickListener {
+            turnoActual = "Noche"
+            activarBotonPestana(btnNoche, btnManana, btnTarde)
+            cargarDosisPorTurno(turnoActual)
+        }
 
-        // Cargar el turno de la Mañana automáticamente al abrir la pantalla
-        cargarDosisPorTurno("Mañana")
+        val btnNuevaDosis = findViewById<MaterialButton>(R.id.btnNuevaDosis)
+        btnNuevaDosis.setOnClickListener {
+            val intent = Intent(this, AsignarDosisActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Estado inicial
+        activarBotonPestana(btnManana, btnTarde, btnNoche)
+        cargarDosisPorTurno(turnoActual)
+    }
+
+    // ✨ 2. Esta función de Android se ejecuta SIEMPRE que regresas a esta pantalla
+    override fun onResume() {
+        super.onResume()
+        // Recargamos silenciosamente la pestaña en la que estábamos
+        cargarDosisPorTurno(turnoActual)
+    }
+
+    private fun activarBotonPestana(activo: MaterialButton, inactivo1: MaterialButton, inactivo2: MaterialButton) {
+        val colorVerde = resources.getColor(R.color.primary_green, theme)
+        val colorBlanco = resources.getColor(R.color.white, theme)
+        val colorTransparente = resources.getColor(android.R.color.transparent, theme)
+
+        activo.backgroundTintList = ColorStateList.valueOf(colorVerde)
+        activo.setTextColor(colorBlanco)
+
+        inactivo1.backgroundTintList = ColorStateList.valueOf(colorTransparente)
+        inactivo1.setTextColor(colorVerde)
+
+        inactivo2.backgroundTintList = ColorStateList.valueOf(colorTransparente)
+        inactivo2.setTextColor(colorVerde)
     }
 
     private fun cargarDosisPorTurno(turnoFiltro: String) {
@@ -61,13 +98,13 @@ class HorariosActivity : AppCompatActivity() {
 
             if (connection != null) {
                 try {
-                    // El Query con los JOIN para traer nombres reales en vez de números de ID
                     val sql = """
-                        SELECT P.nombre AS paciente, M.nombre AS medicamento, D.hora 
+                        SELECT D.id, P.nombre AS paciente, M.nombre AS medicamento, D.hora 
                         FROM Dosis_Programadas D
                         JOIN Pacientes P ON D.id_paciente = P.id
                         JOIN Medicamentos M ON D.id_medicamento = M.id
-                        WHERE D.turno = ? AND D.estado = 'Pendiente'
+                        WHERE D.turno = ? AND D.estado = 'Pendiente' AND D.activa = 1
+                        ORDER BY D.hora ASC
                     """.trimIndent()
 
                     val statement = connection.prepareStatement(sql)
@@ -77,51 +114,96 @@ class HorariosActivity : AppCompatActivity() {
                     val listaDosis = mutableListOf<DosisHorario>()
 
                     while (resultSet.next()) {
-                        // SQL devuelve la hora completa "08:00:00", la cortamos a "08:00"
-                        var horaCompleta = resultSet.getString("hora")
-                        if (horaCompleta.length >= 5) {
-                            horaCompleta = horaCompleta.substring(0, 5)
+                        val horaSQL = resultSet.getString("hora")
+                        var horaInt = horaSQL.substring(0, 2).toInt()
+                        val minutos = horaSQL.substring(3, 5)
+
+                        var amPm = if (horaInt >= 12) "PM" else "AM"
+
+                        // ✨ 3. Inteligencia para corregir el "03:00" de la tarde/noche
+                        if ((turnoFiltro == "Tarde" || turnoFiltro == "Noche") && horaInt < 12) {
+                            amPm = "PM"
                         }
+
+                        if (horaInt > 12) horaInt -= 12
+                        if (horaInt == 0) horaInt = 12
+
+                        val horaFormateada = String.format("%02d:%s\n%s", horaInt, minutos, amPm)
 
                         listaDosis.add(
                             DosisHorario(
+                                resultSet.getInt("id"),
                                 resultSet.getString("paciente"),
                                 resultSet.getString("medicamento"),
-                                horaCompleta
+                                horaFormateada
                             )
                         )
                     }
 
-                    // Pasar los datos a la interfaz visual
                     withContext(Dispatchers.Main) {
-                        contenedorHorarios.removeAllViews() // Limpiar pantalla al cambiar de pestaña
+                        contenedorHorarios.removeAllViews()
 
                         if (listaDosis.isEmpty()) {
-                            Toast.makeText(this@HorariosActivity, "No hay pendientes para la $turnoFiltro", Toast.LENGTH_SHORT).show()
+                            // Pequeño cambio: si está vacío, no mandamos un Toast para que no sea molesto al regresar,
+                            // solo dejamos la pantalla vacía.
                             return@withContext
                         }
 
                         val inflater = LayoutInflater.from(this@HorariosActivity)
 
                         for (dosis in listaDosis) {
-                            // 1. Clonar el diseño de la tarjeta (el archivo item_horario.xml)
                             val vistaTarjeta = inflater.inflate(R.layout.item_horario, contenedorHorarios, false)
 
-                            // 2. Buscar las cajas de texto en ese diseño
                             val tvHora = vistaTarjeta.findViewById<TextView>(R.id.tvHoraDosis)
                             val tvPaciente = vistaTarjeta.findViewById<TextView>(R.id.tvNombrePacienteDosis)
                             val tvMedicamento = vistaTarjeta.findViewById<TextView>(R.id.tvMedicamentoDosis)
 
-                            // 3. Pegar los datos de SQL
-                            tvHora.text = "${dosis.hora}\nAM" // Puedes mejorar la lógica AM/PM después
+                            tvHora.text = dosis.hora
                             tvPaciente.text = dosis.paciente
                             tvMedicamento.text = dosis.medicamento
 
-                            // 4. Inyectar en la pantalla
+                            vistaTarjeta.setOnLongClickListener {
+                                androidx.appcompat.app.AlertDialog.Builder(this@HorariosActivity)
+                                    .setTitle("Suspender Tratamiento")
+                                    .setMessage("¿Estás seguro de que deseas suspender la dosis de ${dosis.medicamento} para ${dosis.paciente}?")
+                                    .setPositiveButton("Sí, suspender") { dialog, _ ->
+                                        suspenderDosisEnSQL(dosis.id, turnoFiltro)
+                                        dialog.dismiss()
+                                    }
+                                    .setNegativeButton("Cancelar") { dialog, _ ->
+                                        dialog.dismiss()
+                                    }
+                                    .show()
+                                true
+                            }
+
                             contenedorHorarios.addView(vistaTarjeta)
                         }
                     }
 
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    connection.close()
+                }
+            }
+        }
+    }
+
+    private fun suspenderDosisEnSQL(idDosis: Int, turnoActual: String) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val connection = conectarBaseDeDatos()
+            if (connection != null) {
+                try {
+                    val sql = "UPDATE Dosis_Programadas SET activa = 0 WHERE id = ?"
+                    val statement = connection.prepareStatement(sql)
+                    statement.setInt(1, idDosis)
+                    statement.executeUpdate()
+
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@HorariosActivity, "Dosis suspendida correctamente", Toast.LENGTH_SHORT).show()
+                        cargarDosisPorTurno(turnoActual)
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 } finally {

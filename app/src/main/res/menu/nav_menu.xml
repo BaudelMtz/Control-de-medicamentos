@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/nav_inicio"       android:icon="@drawable/ic_inicio"       android:title="Inicio" />
-    <item android:id="@+id/nav_registrar"    android:icon="@drawable/ic_registrar"    android:title="Registrar" />
+    <item android:id="@+id/nav_perfiles"     android:icon="@drawable/ic_perfiles"     android:title="Registrar Pacientes" />
     <item android:id="@+id/nav_medicamentos" android:icon="@drawable/ic_medicamentos" android:title="Medicamentos" />
     <item android:id="@+id/nav_horarios"     android:icon="@drawable/ic_horarios"     android:title="Horarios" />
     <item android:id="@+id/nav_reportes"     android:icon="@drawable/ic_reportes"     android:title="Reportes" />
-    <item android:id="@+id/nav_perfiles"     android:icon="@drawable/ic_perfiles"     android:title="Perfiles" />
+    <item android:id="@+id/nav_registrar"    android:icon="@drawable/ic_registrar"    android:title="Registrar Enfermero" />
     <item android:id="@+id/nav_ajustes"      android:icon="@drawable/ic_ajustes"      android:title="Ajustes" />
 </menu>

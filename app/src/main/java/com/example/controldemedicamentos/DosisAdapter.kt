@@ -7,11 +7,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 
-// El adaptador recibe una lista de objetos "Dosis"
-class DosisAdapter(private val listaDosis: List<Dosis>) :
-    RecyclerView.Adapter<DosisAdapter.DosisViewHolder>() {
+// ✨ Agregamos el onAdministradoClick para comunicarnos con el Panel Principal
+class DosisAdapter(
+    private val listaDosis: List<Dosis>,
+    private val onAdministradoClick: (Dosis) -> Unit
+) : RecyclerView.Adapter<DosisAdapter.DosisViewHolder>() {
 
-    // 1. Esta clase interna "encuentra" los elementos de tu diseño XML (item_dosis.xml)
     class DosisViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvHora: TextView = itemView.findViewById(R.id.tvHoraDosis)
         val tvPaciente: TextView = itemView.findViewById(R.id.tvNombrePaciente)
@@ -19,14 +20,12 @@ class DosisAdapter(private val listaDosis: List<Dosis>) :
         val btnAdministrado: MaterialButton = itemView.findViewById(R.id.btnAdministrado)
     }
 
-    // 2. Aquí "inflamos" (convertimos a código) el diseño XML por cada elemento de la lista
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DosisViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_dosis, parent, false)
         return DosisViewHolder(view)
     }
 
-    // 3. Le dice al RecyclerView cuántas tarjetas hay en total
     override fun getItemCount(): Int {
         return listaDosis.size
     }
@@ -38,22 +37,10 @@ class DosisAdapter(private val listaDosis: List<Dosis>) :
         holder.tvPaciente.text = dosisActual.nombrePaciente
         holder.tvMedicamento.text = dosisActual.medicamentoInfo
 
-        // --- INICIO DE LA LÓGICA DEL BOTÓN ---
+        // --- LÓGICA DEL BOTÓN ---
         holder.btnAdministrado.setOnClickListener {
-            // 1.Mostramos un mensaje flotante
-            android.widget.Toast.makeText(
-                holder.itemView.context,
-                "Dosis de ${dosisActual.nombrePaciente} registrada",
-                android.widget.Toast.LENGTH_SHORT
-            ).show()
-
-            // 2. Cambiamos la apariencia del botón para simular que ya se administró
-            holder.btnAdministrado.text = "Administrado"
-            holder.btnAdministrado.setBackgroundColor(android.graphics.Color.parseColor("#95A5A6")) // Gris
-            holder.btnAdministrado.isEnabled = false // Lo deshabilitamos para que no le den doble clic
-
-            // NOTA PARA DESPUES: Aquí es donde pondremos el código de Retrofit
-            // para avisarle a SQL Server que esta medicina ya se dio.
+            // Le avisamos a la pantalla principal que se presionó este botón y le pasamos los datos
+            onAdministradoClick(dosisActual)
         }
     }
 }

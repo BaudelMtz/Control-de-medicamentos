@@ -5,13 +5,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/bg_screen"
-    android:fitsSystemWindows="true"> <androidx.appcompat.widget.Toolbar
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="@color/primary_green"
-    app:title="Gestor de Horarios"
-    app:titleTextColor="@color/white" />
+    android:fitsSystemWindows="true">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary_green"
+        app:title="Gestor de Horarios"
+        app:titleTextColor="@color/white" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -32,13 +34,16 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnManana"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Mañana"
+                    android:textAllCaps="false"
                     app:cornerRadius="8dp"
                     android:layout_marginEnd="4dp"
-                    android:backgroundTint="@color/primary_green"/>
+                    app:strokeColor="@color/primary_green"
+                    android:textColor="@color/primary_green"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnTarde"
@@ -47,6 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Tarde"
+                    android:textAllCaps="false"
                     app:cornerRadius="8dp"
                     android:layout_marginEnd="4dp"
                     app:strokeColor="@color/primary_green"
@@ -59,6 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Noche"
+                    android:textAllCaps="false"
                     app:cornerRadius="8dp"
                     app:strokeColor="@color/primary_green"
                     android:textColor="@color/primary_green"/>
@@ -79,6 +86,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
             </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNuevaDosis"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:text="+ Programar Nueva Dosis"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                app:cornerRadius="12dp"
+                android:backgroundTint="@color/primary_green"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

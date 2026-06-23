@@ -55,6 +55,8 @@
             android:exported="false" />
         <activity android:name=".AgregarMedicamentoActivity" />
         <activity android:name=".RegistroPacienteActivity" />
+
+        <activity android:name=".AsignarDosisActivity" />
     </application>
 
 </manifest>
