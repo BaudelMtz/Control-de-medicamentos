@@ -3,74 +3,132 @@ package com.example.controldemedicamentos
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import conectarBaseDeDatos
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AjustesActivity : AppCompatActivity() {
 
-    // Variable para Firebase que añadimos nosotros
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ajustes)
 
-        // ==========================================
-        // CÓDIGO DE TU COMPAÑERO (Barra de navegación) - INTACTO
-        // ==========================================
+        // Configuración Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.navigationIcon?.setTint(resources.getColor(R.color.white, theme))
+        toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
-        toolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
-
-        // ==========================================
-        // TU CÓDIGO (Botón de Cerrar Sesión)
-        // ==========================================
-        // Inicializamos Firebase Auth
+        // Inicializar datos
+        cargarDatosUsuario()
         auth = Firebase.auth
 
-        // Enlazamos el botón rojo de la interfaz (asegúrate de que el ID coincida con el XML)
-        val btnCerrarSesion: Button = findViewById(R.id.btnCerrarSesion)
+        // Botones
+        findViewById<Button>(R.id.btnCerrarSesion).setOnClickListener { cerrarSesionCompleta() }
+        findViewById<LinearLayout>(R.id.llBtnSincronizar).setOnClickListener {
+            Toast.makeText(this, "Sincronizando...", Toast.LENGTH_SHORT).show()
+            // Aquí podrías agregar lógica para refrescar datos si fuera necesario
+        }
+        findViewById<LinearLayout>(R.id.llBtnCambiarPassword).setOnClickListener { mostrarDialogoCambioPassword() }
+    }
 
-        btnCerrarSesion.setOnClickListener {
-            cerrarSesionCompleta()
+    private fun cargarDatosUsuario() {
+        // 1. Obtenemos el correo guardado (este nunca falla porque lo guardamos en el login)
+        val prefs = getSharedPreferences("MisPreferencias", MODE_PRIVATE)
+        val correo = prefs.getString("correo_usuario", "Usuario") ?: ""
+
+        // Ponemos el correo de inmediato
+        findViewById<TextView>(R.id.tvAjustesCorreo).text = correo
+
+        // 2. Consultamos el nombre real en la Base de Datos para que sea 100% confiable
+        lifecycleScope.launch(Dispatchers.IO) {
+            val con = conectarBaseDeDatos()
+            try {
+                // Buscamos el nombre en SQL usando el correo
+                val sql = "SELECT nombre FROM Usuarios WHERE correo = ?"
+                val stmt = con?.prepareStatement(sql)
+                stmt?.setString(1, correo)
+                val rs = stmt?.executeQuery()
+
+                if (rs != null && rs.next()) {
+                    val nombreReal = rs.getString("nombre")
+
+                    // Actualizamos la UI en el hilo principal
+                    withContext(Dispatchers.Main) {
+                        findViewById<TextView>(R.id.tvAjustesNombre).text = nombreReal
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                con?.close()
+            }
         }
     }
 
-    // ==========================================
-    // FUNCIÓN PARA DESCONECTAR A GOOGLE Y FIREBASE
-    // ==========================================
+    private fun mostrarDialogoCambioPassword() {
+        val editText = EditText(this)
+        editText.hint = "Nueva contraseña"
+
+        AlertDialog.Builder(this)
+            .setTitle("Cambiar Contraseña")
+            .setView(editText)
+            .setPositiveButton("Guardar") { _, _ ->
+                val nuevaPass = editText.text.toString()
+                if (nuevaPass.isNotEmpty()) {
+                    actualizarPasswordEnSQL(nuevaPass)
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun actualizarPasswordEnSQL(nuevaPass: String) {
+        val prefs = getSharedPreferences("MisPreferencias", MODE_PRIVATE)
+        val correo = prefs.getString("correo_usuario", "") ?: ""
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val con = conectarBaseDeDatos()
+            try {
+                val sql = "UPDATE Usuarios SET contraseña = ? WHERE correo = ?"
+                val stmt = con?.prepareStatement(sql)
+                stmt?.setString(1, nuevaPass)
+                stmt?.setString(2, correo)
+                stmt?.executeUpdate()
+
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@AjustesActivity, "Contraseña actualizada", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                con?.close()
+            }
+        }
+    }
+
     private fun cerrarSesionCompleta() {
-        // 1. Cerramos la sesión de Firebase
         auth.signOut()
-
-        // 2. Configuramos el cliente de Google para pedirle que olvide la cuenta
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        val googleSignInClient = GoogleSignIn.getClient(this, gso)
-
-        // 3. Cerramos la sesión de Google (para que vuelva a salir la ventana de cuentas)
-        googleSignInClient.signOut().addOnCompleteListener(this) {
-
-            // 4. Borramos las preferencias guardadas (tu sesión de base de datos)
-            val sharedPref = getSharedPreferences("SesionUsuario", Context.MODE_PRIVATE)
-            sharedPref.edit().clear().apply()
-
-            // 5. Redirigimos al usuario de vuelta a la pantalla de Login
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+        GoogleSignIn.getClient(this, gso).signOut().addOnCompleteListener {
+            getSharedPreferences("SesionUsuario", MODE_PRIVATE).edit().clear().apply()
+            getSharedPreferences("MisPreferencias", MODE_PRIVATE).edit().clear().apply()
             val intent = Intent(this, LoginActivity::class.java)
-            // Estas banderas evitan que el usuario regrese con el botón "Atrás" del celular
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()

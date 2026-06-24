@@ -43,6 +43,7 @@
                     android:textColor="@color/black"/>
 
                 <TextView
+                    android:id="@+id/tvFechaPanel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="martes, 24 de marzo de 2026"
@@ -66,6 +67,7 @@
                         app:strokeColor="#E2E8F0"
                         app:strokeWidth="1dp"
                         app:cardBackgroundColor="@color/white">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -83,6 +85,7 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
                                 <TextView
+                                    android:id="@+id/tvTotalResidentes"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="24"
@@ -127,6 +130,7 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
                                 <TextView
+                                    android:id="@+id/tvTotalDosisHoy"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="87"
@@ -178,6 +182,7 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
                                 <TextView
+                                    android:id="@+id/tvTotalPendientes"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="5"
@@ -222,6 +227,7 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
                                 <TextView
+                                    android:id="@+id/tvTotalStock"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="42"

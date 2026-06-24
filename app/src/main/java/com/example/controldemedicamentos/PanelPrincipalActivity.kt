@@ -3,6 +3,7 @@ package com.example.controldemedicamentos
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -18,6 +19,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import conectarBaseDeDatos
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class PanelPrincipalActivity : AppCompatActivity() {
 
@@ -37,7 +41,10 @@ class PanelPrincipalActivity : AppCompatActivity() {
         recyclerDosis = findViewById(R.id.recycler_dosis)
         recyclerDosis.layoutManager = LinearLayoutManager(this)
 
-        cargarDosisDeHoy()
+        // ✨ 1. Actualizamos la fecha a la del día de hoy
+        val tvFecha = findViewById<TextView>(R.id.tvFechaPanel)
+        val fechaActual = SimpleDateFormat("EEEE, d 'de' MMMM 'de' yyyy", Locale("es", "ES")).format(Date())
+        tvFecha?.text = fechaActual
 
         val toggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar,
@@ -55,7 +62,7 @@ class PanelPrincipalActivity : AppCompatActivity() {
                 R.id.nav_medicamentos -> { startActivity(Intent(this, MedicamentosActivity::class.java)) }
                 R.id.nav_horarios -> { startActivity(Intent(this, HorariosActivity::class.java)) }
                 R.id.nav_reportes -> { startActivity(Intent(this, ReportesActivity::class.java)) }
-                R.id.nav_perfiles -> { startActivity(Intent(this, RegistroPacienteActivity::class.java)) }
+                R.id.nav_perfiles -> { startActivity(Intent(this, PacientesActivity::class.java)) }
                 R.id.nav_ajustes -> { startActivity(Intent(this, AjustesActivity::class.java)) }
             }
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -77,6 +84,46 @@ class PanelPrincipalActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         cargarDosisDeHoy()
+        cargarEstadisticas() // ✨ Cargamos los números del dashboard
+    }
+
+    // ✨ 2. NUEVA FUNCIÓN PARA LAS 4 TARJETAS DE ARRIBA ✨
+    private fun cargarEstadisticas() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val connection = conectarBaseDeDatos()
+            if (connection != null) {
+                try {
+                    val stmt = connection.createStatement()
+
+                    // Residentes Activos
+                    val rs1 = stmt.executeQuery("SELECT COUNT(*) FROM Pacientes WHERE activo = 1")
+                    val residentes = if (rs1.next()) rs1.getInt(1) else 0
+
+                    // Dosis Totales (Programadas activas)
+                    val rs2 = stmt.executeQuery("SELECT COUNT(*) FROM Dosis_Programadas WHERE activa = 1")
+                    val dosisHoy = if (rs2.next()) rs2.getInt(1) else 0
+
+                    // Dosis Pendientes
+                    val rs3 = stmt.executeQuery("SELECT COUNT(*) FROM Dosis_Programadas WHERE activa = 1 AND estado = 'Pendiente'")
+                    val pendientes = if (rs3.next()) rs3.getInt(1) else 0
+
+                    // Total de pastillas en inventario
+                    val rs4 = stmt.executeQuery("SELECT SUM(cantidad_disponible) FROM Medicamentos WHERE activo = 1")
+                    val stock = if (rs4.next()) rs4.getInt(1) else 0
+
+                    withContext(Dispatchers.Main) {
+                        findViewById<TextView>(R.id.tvTotalResidentes)?.text = residentes.toString()
+                        findViewById<TextView>(R.id.tvTotalDosisHoy)?.text = dosisHoy.toString()
+                        findViewById<TextView>(R.id.tvTotalPendientes)?.text = pendientes.toString()
+                        findViewById<TextView>(R.id.tvTotalStock)?.text = stock.toString()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    connection.close()
+                }
+            }
+        }
     }
 
     private fun cargarDosisDeHoy() {
@@ -85,7 +132,6 @@ class PanelPrincipalActivity : AppCompatActivity() {
 
             if (connection != null) {
                 try {
-                    // ✨ 1. Agregamos D.turno al SELECT para que el Panel sepa de qué turno es cada dosis
                     val sql = """
                         SELECT D.id AS id_dosis, D.id_medicamento, D.hora, D.turno, P.nombre AS paciente, M.nombre AS medicamento 
                         FROM Dosis_Programadas D
@@ -101,25 +147,20 @@ class PanelPrincipalActivity : AppCompatActivity() {
 
                     while (resultSet.next()) {
                         val horaSQL = resultSet.getString("hora")
-                        val turnoDosis = resultSet.getString("turno") // Extraemos si es Mañana, Tarde o Noche
+                        val turnoDosis = resultSet.getString("turno")
 
-                        // Extraemos los números
                         var horaInt = horaSQL.substring(0, 2).toInt()
                         val minutos = horaSQL.substring(3, 5)
 
-                        // Determinamos si es AM o PM
                         var amPm = if (horaInt >= 12) "PM" else "AM"
 
-                        // ✨ 2. Inteligencia para corregir el "03:00" de la tarde/noche en el inicio
                         if ((turnoDosis == "Tarde" || turnoDosis == "Noche") && horaInt < 12) {
                             amPm = "PM"
                         }
 
-                        // Convertimos formato 24h a 12h
                         if (horaInt > 12) horaInt -= 12
                         if (horaInt == 0) horaInt = 12
 
-                        // Armamos el texto en una sola línea para el Panel
                         val horaFormateada = String.format("%02d:%s %s", horaInt, minutos, amPm)
 
                         listaDosisReales.add(
@@ -142,7 +183,6 @@ class PanelPrincipalActivity : AppCompatActivity() {
 
                 } catch (e: Exception) {
                     e.printStackTrace()
-
                 } finally {
                     connection.close()
                 }
@@ -150,19 +190,16 @@ class PanelPrincipalActivity : AppCompatActivity() {
         }
     }
 
-    // ✨ ESTA ES LA FUNCIÓN QUE HACE EL TRABAJO PESADO EN SQL ✨
     private fun marcarComoAdministrada(dosis: Dosis) {
         lifecycleScope.launch(Dispatchers.IO) {
             val connection = conectarBaseDeDatos()
             if (connection != null) {
                 try {
-                    // 1. Cambiamos la dosis a 'Tomado'
                     val sqlUpdateDosis = "UPDATE Dosis_Programadas SET estado = 'Tomado' WHERE id = ?"
                     val stmt1 = connection.prepareStatement(sqlUpdateDosis)
                     stmt1.setInt(1, dosis.idDosis)
                     stmt1.executeUpdate()
 
-                    // 2. Le restamos 1 al inventario (solo si hay más de 0 para no tener números negativos)
                     val sqlUpdateStock = "UPDATE Medicamentos SET cantidad_disponible = cantidad_disponible - 1 WHERE id = ? AND cantidad_disponible > 0"
                     val stmt2 = connection.prepareStatement(sqlUpdateStock)
                     stmt2.setInt(1, dosis.idMedicamento)
@@ -170,7 +207,8 @@ class PanelPrincipalActivity : AppCompatActivity() {
 
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@PanelPrincipalActivity, "✅ Dosis registrada. Inventario actualizado.", Toast.LENGTH_SHORT).show()
-                        cargarDosisDeHoy() // Recargamos la lista y la tarjeta desaparecerá de pendientes
+                        cargarDosisDeHoy()
+                        cargarEstadisticas() // ✨ Recargamos las estadísticas para que bajen los 'Pendientes' y el 'Stock' de inmediato
                     }
 
                 } catch (e: Exception) {

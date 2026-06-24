@@ -38,6 +38,7 @@
                 android:layout_marginBottom="16dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etBuscarMedicamento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text" />
@@ -65,6 +66,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="24dp"
                 android:text="+ Añadir Medicamento"
+                android:textAllCaps="false"
                 android:textSize="16sp"
                 app:cornerRadius="12dp"
                 android:backgroundTint="@color/primary_green"/>

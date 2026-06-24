@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.sql.ResultSet
 
-// --- Nuevas importaciones para Firebase y Google ---
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -33,7 +32,6 @@ import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
 
-    // 1. Variables globales para Firebase y Google
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
@@ -48,17 +46,14 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
-        // 2. Inicializamos Firebase Auth
         auth = Firebase.auth
 
-        // 3. Configuramos Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // Referencias a los componentes
         val etEmail: TextInputEditText = findViewById(R.id.etEmail)
         val etPassword: TextInputEditText = findViewById(R.id.etPassword)
         val cbKeepSession: CheckBox = findViewById(R.id.cbShowPassword)
@@ -77,12 +72,10 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // 4. NUEVO CLICK LISTENER PARA GOOGLE
         btnGoogle.setOnClickListener {
             iniciarSesionConGoogle()
         }
 
-        // Botón Iniciar Sesión con Validación Real (Tu código SQL intacto)
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val pass = etPassword.text.toString().trim()
@@ -93,7 +86,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // --- BLOQUE DE FUNCIONES PARA GOOGLE ---
     private val googleSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -116,8 +108,13 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithCredential(credencial)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+
+                    // ✨ 1. GUARDAMOS EL CORREO SI INICIA CON GOOGLE ✨
+                    val correoGoogle = auth.currentUser?.email ?: ""
+                    val prefReportes = getSharedPreferences("MisPreferencias", MODE_PRIVATE)
+                    prefReportes.edit().putString("correo_usuario", correoGoogle).apply()
+
                     Toast.makeText(this, "¡Bienvenido con Google!", Toast.LENGTH_SHORT).show()
-                    // Redirigimos a tu panel principal
                     val intent = Intent(this, PanelPrincipalActivity::class.java)
                     startActivity(intent)
                     finish()
@@ -126,9 +123,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
     }
-    // --- FIN DEL BLOQUE DE GOOGLE ---
 
-    // --- TU CÓDIGO DE SQL SERVER (SIN CAMBIOS) ---
     private fun ejecutarLoginEnDB(correo: String, pass: String, mantenerSesion: Boolean) {
         lifecycleScope.launch(Dispatchers.IO) {
             val connection = conectarBaseDeDatos()
@@ -146,6 +141,10 @@ class LoginActivity : AppCompatActivity() {
                         val userId = resultSet.getInt("id")
                         val nombre = resultSet.getString("nombre")
                         val rol = resultSet.getString("rol")
+
+                        // ✨ 2. GUARDAMOS EL CORREO SI INICIA CON SQL (INDEPENDIENTE DE SI MARCA "MANTENER SESIÓN") ✨
+                        val prefReportes = getSharedPreferences("MisPreferencias", MODE_PRIVATE)
+                        prefReportes.edit().putString("correo_usuario", correo).apply()
 
                         if (mantenerSesion) {
                             val sharedPref = getSharedPreferences("SesionUsuario", MODE_PRIVATE)

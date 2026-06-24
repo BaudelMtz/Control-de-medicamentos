@@ -3,7 +3,10 @@ package com.example.controldemedicamentos
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -17,12 +20,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import conectarBaseDeDatos
 
-// Creamos un pequeño molde para guardar los datos temporalmente
 data class MedicamentoSQL(val nombre: String, val forma: String?, val cantidad: Int)
 
 class MedicamentosActivity : AppCompatActivity() {
 
     private lateinit var contenedorTarjetas: LinearLayout
+    // ✨ La Lista Maestra que guardará todo en memoria para no saturar el SQL
+    private var listaMaestraMeds = mutableListOf<MedicamentoSQL>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,18 +39,29 @@ class MedicamentosActivity : AppCompatActivity() {
             startActivity(Intent(this, AgregarMedicamentoActivity::class.java))
         }
 
-        // Configurar la flecha de regreso en la barra superior
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.navigationIcon?.setTint(resources.getColor(R.color.white, theme))
 
         toolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed() // Esto simula el botón de "Atrás" del celular
+            onBackPressedDispatcher.onBackPressed()
         }
+
+        // ✨ CONFIGURACIÓN DE LA BARRA DE BÚSQUEDA ✨
+        val etBuscar = findViewById<EditText>(R.id.etBuscarMedicamento)
+        etBuscar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            // Esta función se dispara cada vez que el usuario escribe o borra una letra
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filtrarMedicamentos(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
-    // Usamos onResume para que, cada vez que regreses a esta pantalla, se vuelva a cargar la lista fresca
     override fun onResume() {
         super.onResume()
         cargarMedicamentosDesdeSQL()
@@ -62,9 +77,11 @@ class MedicamentosActivity : AppCompatActivity() {
                     val statement = connection.createStatement()
                     val resultSet = statement.executeQuery(sql)
 
-                    val listaMeds = mutableListOf<MedicamentoSQL>()
+                    // Limpiamos la lista maestra antes de llenarla con datos frescos
+                    listaMaestraMeds.clear()
+
                     while (resultSet.next()) {
-                        listaMeds.add(
+                        listaMaestraMeds.add(
                             MedicamentoSQL(
                                 resultSet.getString("nombre"),
                                 resultSet.getString("forma_farmaceutica") ?: "",
@@ -73,40 +90,9 @@ class MedicamentosActivity : AppCompatActivity() {
                         )
                     }
 
-                    // Ahora dibujamos en la pantalla principal
+                    // Dibujamos la lista completa al inicio
                     withContext(Dispatchers.Main) {
-                        contenedorTarjetas.removeAllViews() // Limpiamos por si había algo antes
-
-                        val inflater = LayoutInflater.from(this@MedicamentosActivity)
-
-                        for (med in listaMeds) {
-                            // 1. Clonar la plantilla que creamos en el paso 1
-                            val vistaTarjeta = inflater.inflate(R.layout.item_medicamento, contenedorTarjetas, false)
-
-                            // 2. Buscar los elementos dentro de la plantilla
-                            val card = vistaTarjeta.findViewById<MaterialCardView>(R.id.cardMedicamento)
-                            val icono = vistaTarjeta.findViewById<ImageView>(R.id.ivIconoMed)
-                            val tvNombre = vistaTarjeta.findViewById<TextView>(R.id.tvNombreMed)
-                            val tvStock = vistaTarjeta.findViewById<TextView>(R.id.tvStockMed)
-
-                            // 3. Ponerle los datos de SQL
-                            tvNombre.text = "${med.nombre} (${med.forma})"
-
-                            // Lógica de colores según el stock
-                            if (med.cantidad <= 5) {
-                                tvStock.text = "Stock crítico: ${med.cantidad} unidades restantes"
-                                tvStock.setTextColor(Color.parseColor("#D32F2F")) // Rojo
-                                icono.setColorFilter(Color.parseColor("#D32F2F"))
-                                card.strokeWidth = 3
-                                card.strokeColor = Color.parseColor("#D32F2F")
-                                card.setCardBackgroundColor(Color.parseColor("#FFF3F3"))
-                            } else {
-                                tvStock.text = "En stock: ${med.cantidad} unidades"
-                            }
-
-                            // 4. Pegar la tarjeta ya llena en el contenedor
-                            contenedorTarjetas.addView(vistaTarjeta)
-                        }
+                        dibujarTarjetas(listaMaestraMeds)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -118,6 +104,58 @@ class MedicamentosActivity : AppCompatActivity() {
                     Toast.makeText(this@MedicamentosActivity, "Error conectando al servidor", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+
+    // ✨ FUNCIÓN QUE FILTRA LA LISTA MAESTRA ✨
+    private fun filtrarMedicamentos(textoBuscado: String) {
+        val textoLimpio = textoBuscado.trim().lowercase()
+
+        // Si la barra está vacía, mostramos todos. Si no, filtramos por nombre.
+        val listaFiltrada = if (textoLimpio.isEmpty()) {
+            listaMaestraMeds
+        } else {
+            listaMaestraMeds.filter { med ->
+                med.nombre.lowercase().contains(textoLimpio)
+            }
+        }
+
+        dibujarTarjetas(listaFiltrada)
+    }
+
+    // ✨ FUNCIÓN INDEPENDIENTE PARA DIBUJAR TARJETAS ✨
+    private fun dibujarTarjetas(listaAMostrar: List<MedicamentoSQL>) {
+        contenedorTarjetas.removeAllViews()
+
+        if (listaAMostrar.isEmpty()) {
+            // Opcional: Podrías poner un TextView aquí diciendo "No se encontraron resultados"
+            return
+        }
+
+        val inflater = LayoutInflater.from(this@MedicamentosActivity)
+
+        for (med in listaAMostrar) {
+            val vistaTarjeta = inflater.inflate(R.layout.item_medicamento, contenedorTarjetas, false)
+
+            val card = vistaTarjeta.findViewById<MaterialCardView>(R.id.cardMedicamento)
+            val icono = vistaTarjeta.findViewById<ImageView>(R.id.ivIconoMed)
+            val tvNombre = vistaTarjeta.findViewById<TextView>(R.id.tvNombreMed)
+            val tvStock = vistaTarjeta.findViewById<TextView>(R.id.tvStockMed)
+
+            tvNombre.text = "${med.nombre} (${med.forma})"
+
+            if (med.cantidad <= 5) {
+                tvStock.text = "Stock crítico: ${med.cantidad} unidades restantes"
+                tvStock.setTextColor(Color.parseColor("#D32F2F"))
+                icono.setColorFilter(Color.parseColor("#D32F2F"))
+                card.strokeWidth = 3
+                card.strokeColor = Color.parseColor("#D32F2F")
+                card.setCardBackgroundColor(Color.parseColor("#FFF3F3"))
+            } else {
+                tvStock.text = "En stock: ${med.cantidad} unidades"
+            }
+
+            contenedorTarjetas.addView(vistaTarjeta)
         }
     }
 }

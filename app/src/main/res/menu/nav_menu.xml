@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/nav_inicio"       android:icon="@drawable/ic_inicio"       android:title="Inicio" />
-    <item android:id="@+id/nav_perfiles"     android:icon="@drawable/ic_perfiles"     android:title="Registrar Pacientes" />
+    <item android:id="@+id/nav_perfiles"     android:icon="@drawable/ic_perfiles"     android:title="Pacientes" />
     <item android:id="@+id/nav_medicamentos" android:icon="@drawable/ic_medicamentos" android:title="Medicamentos" />
     <item android:id="@+id/nav_horarios"     android:icon="@drawable/ic_horarios"     android:title="Horarios" />
     <item android:id="@+id/nav_reportes"     android:icon="@drawable/ic_reportes"     android:title="Reportes" />
